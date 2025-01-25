@@ -21,7 +21,9 @@ function RedirectToHome() {
 }
 
 export default function Callback() {
-    <Suspense fallback={<div>Loading...</div>}>
-        <RedirectToHome />
-    </Suspense>
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <RedirectToHome />
+        </Suspense>
+    )
 }
