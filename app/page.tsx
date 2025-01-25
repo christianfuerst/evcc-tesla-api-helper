@@ -27,13 +27,12 @@ export default function Home() {
       </main>
       <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
         <span className="text-sm text-center sm:text-left">
-          Created by{" "}
           <a
             className="font-semibold text-foreground hover:underline"
-            href="https://github.com/christianfuerst"
+            href="https://github.com/christianfuerst/evcc-tesla-api-helper"
             target="_blank"
           >
-            @christianfuerst
+            Source Code on GitHub
           </a>
         </span>
       </footer>
