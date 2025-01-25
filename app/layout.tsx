@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "evcc Tesla API Helper",
-  description: "Create Tesla API tokens with your free tier Tesla Developer account.",
+  description: "Create Tesla API tokens for evcc with your free tier Tesla Developer account.",
 };
 
 export default function RootLayout({
