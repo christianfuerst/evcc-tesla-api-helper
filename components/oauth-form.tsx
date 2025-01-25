@@ -46,6 +46,7 @@ export default function OAuthForm() {
             window.location.href = authorizeUrl.toString()
         } catch (err) {
             setError("An error occurred while submitting the form.")
+            console.error(err)
         }
     }
 

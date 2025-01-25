@@ -1,8 +1,9 @@
 "use client"
 
+import { Suspense } from 'react';
 import { useSearchParams, redirect } from 'next/navigation';
 
-export default function Callback() {
+function RedirectToHome() {
     const searchParams = useSearchParams();
 
     // Get the code from the URL query parameters
@@ -15,4 +16,12 @@ export default function Callback() {
 
     // Redirect to the home page
     redirect('/');
+
+    return null
+}
+
+export default function Callback() {
+    <Suspense fallback={<div>Loading...</div>}>
+        <RedirectToHome />
+    </Suspense>
 }
