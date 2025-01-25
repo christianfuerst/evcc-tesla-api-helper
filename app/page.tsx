@@ -6,8 +6,13 @@ import TokenCard from '@/components/token-card';
 export default function Home() {
   // Try to retrieve the code from the session storage
   let code = null;
+  let clientId = null;
+  let clientSecret = null;
+
   const ISSERVER = typeof window === "undefined";
   if (!ISSERVER) code = sessionStorage.getItem('code');
+  if (!ISSERVER) clientId = sessionStorage.getItem('clientId');
+  if (!ISSERVER) clientSecret = sessionStorage.getItem('clientSecret');
 
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
@@ -18,7 +23,7 @@ export default function Home() {
         <p className="leading-7 [&:not(:first-child)]:mt-2 mb-4">
           Create Tesla API tokens with your free tier Tesla Developer account.
         </p>
-        {code ? <TokenCard code={code} /> : <OAuthForm />}
+        {code && clientId && clientSecret ? <TokenCard code={code} /> : <OAuthForm />}
       </main>
       <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
         <span className="text-sm text-center sm:text-left">
