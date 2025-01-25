@@ -4,44 +4,56 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { AlertCircle } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 
+import { TESLA_AUTHORIZE_URL } from "@/lib/config"
+
 export default function OAuthForm() {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+
     const [clientId, setClientId] = useState("")
     const [clientSecret, setClientSecret] = useState("")
     const [error, setError] = useState("")
-    const [success, setSuccess] = useState(false)
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setError("")
-        setSuccess(false)
 
         if (!clientId || !clientSecret) {
             setError("Please fill in both Client ID and Client Secret.")
             return
         }
 
-        // Here you would typically send the data to your server
-        // For this example, we'll just simulate a successful submission
         try {
-            // Simulating an API call
-            await new Promise((resolve) => setTimeout(resolve, 1000))
-            console.log("Submitted:", { clientId, clientSecret })
-            setSuccess(true)
-            setClientId("")
-            setClientSecret("")
+            // Create random value for state
+            const state = Math.random().toString(36).substring(7)
+
+            // Save the client ID and client secret to the session storage
+            sessionStorage.setItem("clientId", clientId)
+            sessionStorage.setItem("clientSecret", clientSecret)
+
+            // build the OAuth URL
+            const authorizeUrl = new URL(TESLA_AUTHORIZE_URL)
+            authorizeUrl.searchParams.append("response_type", "code")
+            authorizeUrl.searchParams.append("client_id", clientId)
+            authorizeUrl.searchParams.append("redirect_uri", baseUrl + "/callback")
+            authorizeUrl.searchParams.append("scope", "openid offline_access user_data vehicle_device_data vehicle_location")
+            authorizeUrl.searchParams.append("state", state)
+
+            // Redirect to the OAuth URL using window.location.href
+            window.location.href = authorizeUrl.toString()
         } catch (err) {
             setError("An error occurred while submitting the form.")
         }
     }
 
     return (
-        <Card className="w-full max-w-md mx-auto">
+        <Card className="w-full mx-auto">
             <CardHeader>
-                <CardTitle>OAuth Credentials</CardTitle>
+                <CardTitle>Tesla App</CardTitle>
+                <CardDescription>Date entered here is only stored locally in your browser.</CardDescription>
             </CardHeader>
             <form onSubmit={handleSubmit}>
                 <CardContent className="space-y-4">
@@ -72,15 +84,10 @@ export default function OAuthForm() {
                             <AlertDescription>{error}</AlertDescription>
                         </Alert>
                     )}
-                    {success && (
-                        <Alert className="bg-green-100 text-green-800 border-green-300">
-                            <AlertDescription>Credentials submitted successfully!</AlertDescription>
-                        </Alert>
-                    )}
                 </CardContent>
                 <CardFooter>
                     <Button type="submit" className="w-full">
-                        Submit
+                        Tesla Login into your App
                     </Button>
                 </CardFooter>
             </form>
