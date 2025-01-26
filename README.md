@@ -23,6 +23,12 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 ## Run via Docker
 If you only want to run the project without the need to install development tools like npm locally, you can use the following command to create a container:
 
+### Option 1: Run from registry
+```bash
+docker run -p 3000:3000 ghcr.io/christianfuerst/evcc-tesla-api-helper:main
+```
+
+### Option 2: Build and Run locally
 ```bash
 docker build -t evcc-tesla-api-helper .
 ```
