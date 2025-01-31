@@ -39,7 +39,7 @@ export default function OAuthForm() {
             authorizeUrl.searchParams.append("response_type", "code")
             authorizeUrl.searchParams.append("client_id", clientId)
             authorizeUrl.searchParams.append("redirect_uri", baseUrl + "/callback")
-            authorizeUrl.searchParams.append("scope", "openid offline_access user_data vehicle_device_data vehicle_location")
+            authorizeUrl.searchParams.append("scope", "openid offline_access user_data vehicle_device_data vehicle_location vehicle_cmds vehicle_charging_cmds")
             authorizeUrl.searchParams.append("state", state)
 
             // Redirect to the OAuth URL using window.location.href
