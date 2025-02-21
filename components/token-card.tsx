@@ -41,6 +41,7 @@ export default function TokenCard({ code }: TokenCardProps) {
                 code,
                 redirect_uri: baseUrl + '/callback',
                 audience: TESLA_AUDIENCE_URL,
+                scope: 'openid offline_access user_data vehicle_device_data vehicle_location vehicle_cmds vehicle_charging_cmds'
             });
 
             setAccessToken(response.data.access_token);
