@@ -35,10 +35,6 @@ export default function TokenCard({ code }: TokenCardProps) {
 
         try {
             const response = await axios.post(TESLA_TOKEN_URL, {
-                headers: {
-                    'Access-Control-Allow-Origin': '*',
-                    'Content-Type': 'application/json',
-                },
                 grant_type: 'authorization_code',
                 client_id: clientId,
                 client_secret: clientSecret,

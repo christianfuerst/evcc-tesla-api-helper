@@ -54,6 +54,10 @@ export default function OAuthForm() {
         } else {
             try {
                 const tokenResponse = await axios.post(TESLA_AUTHORIZE_TOKEN_URL, {
+                    headers: {
+                        'Access-Control-Allow-Origin': '*',
+                        'Content-Type': 'application/json',
+                    },
                     grant_type: "client_credentials",
                     client_id: clientId,
                     client_secret: clientSecret,
