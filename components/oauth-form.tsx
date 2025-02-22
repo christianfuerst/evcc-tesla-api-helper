@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import axios from 'axios';
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -53,31 +52,43 @@ export default function OAuthForm() {
             }
         } else {
             try {
-                const tokenResponse = await axios.post(TESLA_AUTHORIZE_TOKEN_URL, {
-                    grant_type: "client_credentials",
-                    client_id: clientId,
-                    client_secret: clientSecret,
-                    scope: "openid offline_access user_data vehicle_device_data vehicle_location vehicle_cmds vehicle_charging_cmds",
-                    audience: TESLA_AUDIENCE_URL
-                })
-
-                const accessToken = tokenResponse.data.access_token;
-
-                const partnerAccountsResponse = await axios.post(TESLA_PARTNER_ACCOUNTS_URL, {
+                const tokenResponse = await fetch(TESLA_AUTHORIZE_TOKEN_URL, {
+                    method: "POST",
                     headers: {
-                        Authorization: `Bearer ${accessToken}`
+                        "Content-Type": "application/json"
                     },
-                    domain: baseUrl
+                    body: JSON.stringify({
+                        grant_type: "client_credentials",
+                        client_id: clientId,
+                        client_secret: clientSecret,
+                        scope: "openid offline_access user_data vehicle_device_data vehicle_location vehicle_cmds vehicle_charging_cmds",
+                        audience: TESLA_AUDIENCE_URL
+                    })
                 })
 
-                if (partnerAccountsResponse.data.response) {
+                const tokenData = await tokenResponse.json()
+                const accessToken = tokenData.access_token
+
+                const partnerAccountsResponse = await fetch(TESLA_PARTNER_ACCOUNTS_URL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${accessToken}`
+                    },
+                    body: JSON.stringify({
+                        domain: baseUrl
+                    })
+                })
+
+                const partnerAccountsData = await partnerAccountsResponse.json()
+
+                if (partnerAccountsData.response) {
                     setAppRegistered(true)
                 } else {
                     setError("An error occurred while registering the app.")
-                    console.log(partnerAccountsResponse.data)
+                    console.log(partnerAccountsData)
                 }
-            }
-            catch (err) {
+            } catch (err) {
                 setError("An error occurred while submitting the form.")
                 console.error(err)
             }
