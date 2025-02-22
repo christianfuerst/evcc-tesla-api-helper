@@ -69,6 +69,9 @@ export default function OAuthForm() {
                 const tokenData = await tokenResponse.json()
                 const accessToken = tokenData.access_token
 
+                // Remove http:// or https:// from the baseUrl
+                const sanitizedBaseUrl = baseUrl ? baseUrl.replace(/^https?:\/\//, "") : "";
+
                 const partnerAccountsResponse = await fetch(TESLA_PARTNER_ACCOUNTS_URL, {
                     method: "POST",
                     mode: "no-cors",
@@ -77,7 +80,7 @@ export default function OAuthForm() {
                         "Authorization": `Bearer ${accessToken}`
                     },
                     body: JSON.stringify({
-                        domain: baseUrl
+                        domain: sanitizedBaseUrl
                     })
                 })
 
