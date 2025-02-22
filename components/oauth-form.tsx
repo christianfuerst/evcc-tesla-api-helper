@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import axios from 'axios';
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -8,13 +9,14 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription }
 import { AlertCircle } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 
-import { TESLA_AUTHORIZE_URL } from "@/lib/config"
+import { TESLA_AUTHORIZE_TOKEN_URL, TESLA_AUDIENCE_URL, TESLA_PARTNER_ACCOUNTS_URL, TESLA_AUTHORIZE_URL } from "@/lib/config"
 
 export default function OAuthForm() {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
     const [clientId, setClientId] = useState("")
     const [clientSecret, setClientSecret] = useState("")
+    const [appRegistered, setAppRegistered] = useState(false)
     const [error, setError] = useState("")
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -26,27 +28,59 @@ export default function OAuthForm() {
             return
         }
 
-        try {
-            // Create random value for state
-            const state = Math.random().toString(36).substring(7)
+        if (appRegistered) {
+            try {
+                // Create random value for state
+                const state = Math.random().toString(36).substring(7)
 
-            // Save the client ID and client secret to the session storage
-            sessionStorage.setItem("clientId", clientId)
-            sessionStorage.setItem("clientSecret", clientSecret)
+                // Save the client ID and client secret to the session storage
+                sessionStorage.setItem("clientId", clientId)
+                sessionStorage.setItem("clientSecret", clientSecret)
 
-            // build the OAuth URL
-            const authorizeUrl = new URL(TESLA_AUTHORIZE_URL)
-            authorizeUrl.searchParams.append("response_type", "code")
-            authorizeUrl.searchParams.append("client_id", clientId)
-            authorizeUrl.searchParams.append("redirect_uri", baseUrl + "/callback")
-            authorizeUrl.searchParams.append("scope", "openid offline_access user_data vehicle_device_data vehicle_location vehicle_cmds vehicle_charging_cmds")
-            authorizeUrl.searchParams.append("state", state)
+                // build the OAuth URL
+                const authorizeUrl = new URL(TESLA_AUTHORIZE_URL)
+                authorizeUrl.searchParams.append("response_type", "code")
+                authorizeUrl.searchParams.append("client_id", clientId)
+                authorizeUrl.searchParams.append("redirect_uri", baseUrl + "/callback")
+                authorizeUrl.searchParams.append("scope", "openid offline_access user_data vehicle_device_data vehicle_location vehicle_cmds vehicle_charging_cmds")
+                authorizeUrl.searchParams.append("state", state)
 
-            // Redirect to the OAuth URL using window.location.href
-            window.location.href = authorizeUrl.toString()
-        } catch (err) {
-            setError("An error occurred while submitting the form.")
-            console.error(err)
+                // Redirect to the OAuth URL using window.location.href
+                window.location.href = authorizeUrl.toString()
+            } catch (err) {
+                setError("An error occurred while submitting the form.")
+                console.error(err)
+            }
+        } else {
+            try {
+                const tokenResponse = await axios.post(TESLA_AUTHORIZE_TOKEN_URL, {
+                    grant_type: "client_credentials",
+                    client_id: clientId,
+                    client_secret: clientSecret,
+                    scope: "openid offline_access user_data vehicle_device_data vehicle_location vehicle_cmds vehicle_charging_cmds",
+                    audience: TESLA_AUDIENCE_URL
+                })
+
+                const accessToken = tokenResponse.data.access_token;
+
+                const partnerAccountsResponse = await axios.post(TESLA_PARTNER_ACCOUNTS_URL, {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`
+                    },
+                    domain: baseUrl
+                })
+
+                if (partnerAccountsResponse.data.response) {
+                    setAppRegistered(true)
+                } else {
+                    setError("An error occurred while registering the app.")
+                    console.log(partnerAccountsResponse.data)
+                }
+            }
+            catch (err) {
+                setError("An error occurred while submitting the form.")
+                console.error(err)
+            }
         }
     }
 
@@ -86,8 +120,11 @@ export default function OAuthForm() {
                         </Alert>
                     )}
                 </CardContent>
-                <CardFooter>
-                    <Button type="submit" className="w-full">
+                <CardFooter className="space-x-4">
+                    <Button type="submit" className="w-full" disabled={appRegistered}>
+                        Register your App
+                    </Button>
+                    <Button type="submit" className="w-full" disabled={!appRegistered}>
                         Tesla Login into your App
                     </Button>
                 </CardFooter>
