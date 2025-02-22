@@ -67,6 +67,7 @@ export default function OAuthForm() {
                 })
 
                 const tokenData = await tokenResponse.json()
+                console.log(tokenData)
                 const accessToken = tokenData.access_token
 
                 // Remove http:// or https:// from the baseUrl
@@ -85,8 +86,6 @@ export default function OAuthForm() {
                 })
 
                 const partnerAccountsData = await partnerAccountsResponse.json()
-
-                console.log(partnerAccountsData)
 
                 if (partnerAccountsData.response) {
                     setAppRegistered(true)
