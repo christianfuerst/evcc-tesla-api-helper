@@ -54,17 +54,16 @@ export default function OAuthForm() {
             try {
                 const tokenResponse = await fetch(TESLA_AUTHORIZE_TOKEN_URL, {
                     method: "POST",
-                    mode: "no-cors",
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/x-www-form-urlencoded"
                     },
-                    body: JSON.stringify({
+                    body: new URLSearchParams({
                         grant_type: "client_credentials",
                         client_id: clientId,
                         client_secret: clientSecret,
                         scope: "openid offline_access user_data vehicle_device_data vehicle_location vehicle_cmds vehicle_charging_cmds",
                         audience: TESLA_AUDIENCE_URL
-                    })
+                    }).toString()
                 })
 
                 const tokenData = await tokenResponse.json()
