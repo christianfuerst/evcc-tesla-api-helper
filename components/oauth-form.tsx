@@ -54,6 +54,7 @@ export default function OAuthForm() {
             try {
                 const tokenResponse = await fetch(TESLA_AUTHORIZE_TOKEN_URL, {
                     method: "POST",
+                    mode: "no-cors",
                     headers: {
                         "Content-Type": "application/json"
                     },
@@ -71,6 +72,7 @@ export default function OAuthForm() {
 
                 const partnerAccountsResponse = await fetch(TESLA_PARTNER_ACCOUNTS_URL, {
                     method: "POST",
+                    mode: "no-cors",
                     headers: {
                         "Content-Type": "application/json",
                         "Authorization": `Bearer ${accessToken}`
