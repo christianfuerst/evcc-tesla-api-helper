@@ -86,6 +86,8 @@ export default function OAuthForm() {
 
                 const partnerAccountsData = await partnerAccountsResponse.json()
 
+                console.log(partnerAccountsData)
+
                 if (partnerAccountsData.response) {
                     setAppRegistered(true)
                 } else {
