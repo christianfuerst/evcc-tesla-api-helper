@@ -16,7 +16,7 @@ interface TokenCardProps {
 }
 
 export default function TokenCard({ code }: TokenCardProps) {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+    const baseUrl = "https://evcc-tesla-api-helper-git-main-christianfuersts-projects.vercel.app";
 
     const [error, setError] = useState("")
 

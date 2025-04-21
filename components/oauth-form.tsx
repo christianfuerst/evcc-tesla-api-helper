@@ -11,7 +11,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { TESLA_AUTHORIZE_TOKEN_URL, TESLA_AUDIENCE_URL, TESLA_PARTNER_ACCOUNTS_URL, TESLA_AUTHORIZE_URL } from "@/lib/config"
 
 export default function OAuthForm() {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+    const baseUrl = "https://evcc-tesla-api-helper-git-main-christianfuersts-projects.vercel.app";
 
     const [clientId, setClientId] = useState("")
     const [clientSecret, setClientSecret] = useState("")
