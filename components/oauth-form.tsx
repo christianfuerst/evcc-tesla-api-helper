@@ -15,7 +15,7 @@ export default function OAuthForm() {
 
     const [clientId, setClientId] = useState("")
     const [clientSecret, setClientSecret] = useState("")
-    const [appRegistered, setAppRegistered] = useState(false)
+    const [appRegistered, setAppRegistered] = useState(true)
     const [error, setError] = useState("")
 
     const handleSubmit = async (e: React.FormEvent) => {
